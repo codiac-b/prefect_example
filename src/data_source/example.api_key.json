@@ -1,8 +1,7 @@
 {
-  "source": {
+  "NOAA": {
     "name": "NOAA",
     "link": "https://www.ncdc.noaa.gov/cdo-web/webservices/v2",
-    "apiKey": ""
+    "apiKey": "asdf"
   }
 }
-
