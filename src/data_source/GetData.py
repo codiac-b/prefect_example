@@ -9,48 +9,6 @@ import pandas as pd
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-def get_noaa_ghcnd_data(url: str = 'https://www.ncei.noaa.gov/cdo-web/api/v2/data',
-                   start_date: str = dt.date.today() - dt.timedelta(days=30),
-                   end_date: str = dt.date.today(),
-                   station_id: str = 'GHCND:US1COAR0043',
-                   offset: int = 0, ) -> list:
-    """
-    Explore the NOAA datasets
-    :param offset:
-    :param start_date:
-    :param end_date:
-    :param station_id:
-    :param url:
-    :return:
-    """
-    dataset = []
-    api_key = read_api_key(source_name='NOAA')
-    headers = {'token': api_key}
-
-    params = {'datasetid': 'GHCND',
-              'startdate': start_date,
-              'enddate': end_date,
-              'stationid': station_id,
-              'limit': 1,
-              'offset': 0,
-              }
-
-    response = requests.get(url, headers=headers, params=params).json()
-    dataset += response['results']
-
-    if response['metadata']['resultset']['count'] > params['limit']:
-        print('More than 100 results.  Need to paginate.')
-        params['offset'] += params['limit']
-        data_size = response['metadata']['resultset']['count']
-        while len(dataset) < data_size:
-            print(len(response['results']))
-            response = requests.get(url, headers=headers, params=params).json()
-            dataset += (response['results'])
-            params['offset'] += params['limit']
-            data_size = response['metadata']['resultset']['count']
-
-
-    return dataset
 
 def get_daily_currency_exchange_rate(version: str = '1',
                                date: str = 'latest',
@@ -73,8 +31,9 @@ def get_daily_currency_exchange_rate(version: str = '1',
         Get the currency codes
         :return:
         """
-        long_url: str = 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies.json'
-        min_url: str = 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies.min.json'
+        url = 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies'
+        long_url: str = f'{url}{main_url_end}'
+        min_url: str = f'{url}{min_url_end}'
 
         code_response = None
 
